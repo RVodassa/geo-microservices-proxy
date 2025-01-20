@@ -1,0 +1,261 @@
+definitions:
+  controller.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  controller.Response:
+    properties:
+      code:
+        description: Сообщение для пользователя
+        type: integer
+      data:
+        description: Данные ответа
+    type: object
+  entity.GeocodeRequest:
+    properties:
+      lat:
+        type: string
+      lng:
+        type: string
+    type: object
+  entity.ListRequest:
+    properties:
+      limit:
+        type: integer
+      offset:
+        type: integer
+    type: object
+  entity.LoginRequest:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  entity.ProfileRequest:
+    properties:
+      id:
+        type: integer
+    type: object
+  entity.RegisterRequest:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  entity.SearchRequest:
+    properties:
+      query:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@geo.com
+    name: API Support
+  description: API для работы с геоданными
+  license:
+    name: Apache 2.0
+  title: Geo Microservices API
+  version: "1.0"
+paths:
+  /api/address/geocode:
+    post:
+      consumes:
+      - application/json
+      description: Выполняет геокодирование на основе переданных параметров
+      parameters:
+      - description: Параметры геокодирования
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.GeocodeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное геокодирование
+          schema:
+            $ref: '#/definitions/controller.Response'
+        "400":
+          description: Ошибка клиента
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Геокодирование
+      tags:
+      - geo-service
+  /api/address/search:
+    post:
+      consumes:
+      - application/json
+      description: Выполняет поиск данных на основе переданных параметров
+      parameters:
+      - description: Параметры поиска
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SearchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешный поиск
+          schema:
+            $ref: '#/definitions/controller.Response'
+        "400":
+          description: Ошибка клиента
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Поиск данных
+      tags:
+      - geo-service
+  /api/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Проверяет учетные данные и возвращает токен доступа
+      parameters:
+      - description: Данные для входа
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная аутентификация
+          schema:
+            $ref: '#/definitions/controller.Response'
+        "400":
+          description: Ошибка клиента
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "401":
+          description: Неверные учетные данные
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Аутентификация пользователя
+      tags:
+      - auth
+  /api/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Сохраняет данные для авторизации в бд
+      parameters:
+      - description: Данные для регистрации
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная регистрация
+          schema:
+            $ref: '#/definitions/controller.Response'
+        "400":
+          description: Ошибка клиента
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      summary: Регистрация пользователя
+      tags:
+      - auth
+  /api/user/list:
+    post:
+      consumes:
+      - application/json
+      description: Возвращает список пользователей на основе переданных параметров
+      parameters:
+      - description: Параметры запроса
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.ListRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешный запрос
+          schema:
+            $ref: '#/definitions/controller.Response'
+        "400":
+          description: Ошибка клиента
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список пользователей
+      tags:
+      - users
+  /api/user/profile:
+    post:
+      consumes:
+      - application/json
+      description: Возвращает профиль пользователя на основе переданных параметров
+      parameters:
+      - description: Параметры запроса
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.ProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешный запрос
+          schema:
+            $ref: '#/definitions/controller.Response'
+        "400":
+          description: Ошибка клиента
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Получить профиль пользователя
+      tags:
+      - profile
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
