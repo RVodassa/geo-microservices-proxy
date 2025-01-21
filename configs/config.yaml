@@ -1,0 +1,12 @@
+grpc_services:
+  - name: "geo-service"
+    addr: "geo-service"
+    port: 30303
+  - name: "auth-service"
+    addr: "auth-service"
+    port: 20202
+  - name: "user-service"
+    addr: "user-service"
+    port: 10101
+
+http_port: ":8080"

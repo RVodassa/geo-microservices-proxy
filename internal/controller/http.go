@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"github.com/RVodassa/geo-microservices-proxy/internal/domain/entity"
 	"github.com/RVodassa/geo-microservices-proxy/internal/service"
+	_ "github.com/RVodassa/geo-microservices-proxy/pkg/swagger"
+	"github.com/go-chi/chi/v5"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"log"
 	"net/http"
 )
@@ -12,6 +15,9 @@ import (
 type Response struct {
 	Code int         `json:"code"` // Сообщение для пользователя
 	Data interface{} `json:"data"` // Данные ответа
+}
+type ErrorResponse struct {
+	Message string `json:"message"`
 }
 
 type HttpController struct {
@@ -24,8 +30,29 @@ func NewHttpController(service service.ProxyGeoServiceProvider) *HttpController 
 	}
 }
 
-type ErrorResponse struct {
-	Message string `json:"message"`
+func NewRouter(controller *HttpController) *chi.Mux {
+	r := chi.NewRouter()
+
+	r.Route("/api/auth", func(r chi.Router) {
+		r.Post("/register", controller.RegisterHandler)
+		r.Post("/login", controller.LoginHandler)
+	})
+
+	r.With(controller.JwtMiddleware).Route("/api/user", func(r chi.Router) {
+		r.Post("/list", controller.ListUsersHandler)
+		r.Post("/profile", controller.ProfileHandler)
+	})
+
+	r.With(controller.JwtMiddleware).Route("/api/address", func(r chi.Router) {
+		r.Post("/geocode", controller.GeoCodeHandler)
+		r.Post("/search", controller.SearchHandler)
+	})
+
+	// Маршрут для Swagger UI
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8080/swagger/doc.json"), // URL для swagger.json
+	))
+	return r
 }
 
 func sendError(w http.ResponseWriter, statusCode int, message string) {

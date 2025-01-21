@@ -11,16 +11,19 @@ RUN go mod download
 COPY . .
 
 # Компилируем приложение
-RUN go build -o proxy-service ./cmd/main.go
+RUN go build -o proxy-service main.go
 
 FROM alpine
 
-WORKDIR /root/
+WORKDIR /app
 
 # Копируем скомпилированное приложение из образа builder
 COPY --from=builder /app/proxy-service .
 
-# Открываем порт 10101
+# Копируем папку configs в /app/configs
+COPY ./configs /app/configs
+
+# Открываем порт 8080
 EXPOSE 8080
 
 # Запускаем приложение

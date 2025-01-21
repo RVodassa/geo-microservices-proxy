@@ -5,10 +5,11 @@ import (
 	"errors"
 	"github.com/RVodassa/geo-microservices-proxy/internal/domain/entity"
 	"github.com/RVodassa/geo-microservices-proxy/internal/infrastructure/cache"
-	grpc_auth_service "github.com/RVodassa/geo-microservices-proxy/internal/infrastructure/grpc_auth-service"
-	grpc_geo_service "github.com/RVodassa/geo-microservices-proxy/internal/infrastructure/grpc_geo-service"
-	grpc_user_service "github.com/RVodassa/geo-microservices-proxy/internal/infrastructure/grpc_user-service"
+	grpcAuthService "github.com/RVodassa/geo-microservices-proxy/internal/infrastructure/grpc_auth-service"
+	grpcGeoService "github.com/RVodassa/geo-microservices-proxy/internal/infrastructure/grpc_geo-service"
+	grpcUserService "github.com/RVodassa/geo-microservices-proxy/internal/infrastructure/grpc_user-service"
 	"github.com/go-redis/redis/v8"
+	"google.golang.org/grpc"
 	"log"
 )
 
@@ -24,18 +25,18 @@ type ProxyGeoServiceProvider interface {
 
 type ProxyGeoService struct {
 	cache       cache.CacheServiceProvider
-	authService *grpc_auth_service.AuthServiceClient
-	geoService  *grpc_geo_service.GeoServiceClient
-	userService *grpc_user_service.UserServiceClient
+	authService *grpcAuthService.AuthServiceClient
+	geoService  *grpcGeoService.GeoServiceClient
+	userService *grpcUserService.UserServiceClient
 }
 
 func NewProxyGeoService(
 	cache cache.CacheServiceProvider,
-	authService *grpc_auth_service.AuthServiceClient,
-	geoService *grpc_geo_service.GeoServiceClient,
-	userService *grpc_user_service.UserServiceClient,
+	grpcConns map[string]*grpc.ClientConn,
 ) *ProxyGeoService {
-
+	userService := grpcUserService.NewUserServiceClient(grpcConns["user-service"])
+	geoService := grpcGeoService.NewGeoServiceClient(grpcConns["geo-service"])
+	authService := grpcAuthService.NewAuthServiceClient(grpcConns["auth-service"])
 	return &ProxyGeoService{
 		cache:       cache,
 		authService: authService,
