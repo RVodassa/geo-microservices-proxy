@@ -9,6 +9,8 @@ import (
 )
 
 type Config struct {
+	Env          string        `yaml:"env" env-default:"local"`
+	LogLevel     string        `yaml:"logLevel" env-default:"info"`
 	GRPCServices []GRPCService `yaml:"grpc_services"`
 	HTTPPort     string        `yaml:"http_port"`
 }

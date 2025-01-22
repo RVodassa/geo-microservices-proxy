@@ -1,3 +1,5 @@
+env: "local"
+logLevel: "info"
 grpc_services:
   - name: "geo-service"
     addr: "geo-service"

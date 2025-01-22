@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/RVodassa/geo-microservices-proxy/internal/domain/entity"
+	"github.com/RVodassa/geo-microservices-proxy/internal/domain/logger"
 	"github.com/RVodassa/geo-microservices-proxy/internal/infrastructure/cache"
 	grpcAuthService "github.com/RVodassa/geo-microservices-proxy/internal/infrastructure/grpc_auth-service"
 	grpcGeoService "github.com/RVodassa/geo-microservices-proxy/internal/infrastructure/grpc_geo-service"
@@ -28,9 +29,11 @@ type ProxyGeoService struct {
 	authService *grpcAuthService.AuthServiceClient
 	geoService  *grpcGeoService.GeoServiceClient
 	userService *grpcUserService.UserServiceClient
+	logger      logger.Logger
 }
 
 func NewProxyGeoService(
+	logger logger.Logger,
 	cache cache.CacheServiceProvider,
 	grpcConns map[string]*grpc.ClientConn,
 ) *ProxyGeoService {
@@ -38,6 +41,7 @@ func NewProxyGeoService(
 	geoService := grpcGeoService.NewGeoServiceClient(grpcConns["geo-service"])
 	authService := grpcAuthService.NewAuthServiceClient(grpcConns["auth-service"])
 	return &ProxyGeoService{
+		logger:      logger,
 		cache:       cache,
 		authService: authService,
 		geoService:  geoService,

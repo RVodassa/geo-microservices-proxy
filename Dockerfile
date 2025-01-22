@@ -1,6 +1,6 @@
 FROM golang:1.23.3-alpine AS builder
 
-WORKDIR /app
+WORKDIR /app/proxy-service
 
 RUN apk add --no-cache gcc musl-dev
 
@@ -13,15 +13,15 @@ COPY . .
 # Компилируем приложение
 RUN go build -o proxy-service main.go
 
-FROM alpine
+FROM alpine:latest
 
-WORKDIR /app
+WORKDIR /app/proxy-service
 
 # Копируем скомпилированное приложение из образа builder
 COPY --from=builder /app/proxy-service .
 
-# Копируем папку configs в /app/configs
-COPY ./configs /app/configs
+# Копируем папку configs
+COPY ./configs /app/proxy-service/configs
 
 # Открываем порт 8080
 EXPOSE 8080

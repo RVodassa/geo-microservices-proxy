@@ -2,25 +2,59 @@ package main
 
 import (
 	"github.com/RVodassa/geo-microservices-proxy/app"
+	myLogger "github.com/RVodassa/slog_utils/slog_logger"
 	"log"
+	"log/slog"
 	"os"
 )
 
+// TODO: Доделать ветки логирования и возврата ошибок
+// TODO: Передача через интерфейсы
+// TODO: Тесты
+
 const (
-	defaultConfigPath = "/app/configs/config.yaml" // Путь в контейнере
-	configEnvVar      = "CONFIG_PATH"
+	defaultConfigPath = "/app/proxy-service/configs/config.yaml" // Путь в контейнере
+	configEnvVar      = "CONFIG_PATH"                            // EXPORT CONFIG_PATH
 )
 
 func main() {
-	// Путь к конфигурации
+	const op = "main.main"
+
 	configPath := os.Getenv(configEnvVar)
 	if configPath == "" {
 		configPath = defaultConfigPath
-		log.Printf("Используется конфигурация по умолчанию: %s", configPath)
+		log.Printf("Путь к конфигурации по умолчанию: %s", configPath)
 	}
 
-	// Запуск приложения
-	if err := app.RunApp(configPath); err != nil {
-		log.Fatalf("Ошибка при запуске приложения: %v", err)
+	cfg, err := app.LoadConfig(configPath)
+	if err != nil {
+		log.Fatal(err)
 	}
+
+	logger := setupLogger(cfg)
+	log.Printf("Логер инициализирван. LogLevel=%s; Env=%s", cfg.LogLevel, cfg.Env)
+	// Инициализация и запуск приложения
+	newApp := app.NewApp(logger, cfg)
+	if err = newApp.Run(); err != nil {
+		logger.Error(op, err)
+		os.Exit(1)
+	}
+}
+
+func setupLogger(cfg *app.Config) *slog.Logger {
+	var logLevel slog.Level
+
+	switch cfg.LogLevel {
+	case "debug":
+		logLevel = slog.LevelDebug
+	case "info":
+		logLevel = slog.LevelInfo
+	case "warn":
+		logLevel = slog.LevelWarn
+	case "error":
+		logLevel = slog.LevelError
+	}
+
+	logger := myLogger.SetupLogger(cfg.Env, logLevel)
+	return logger
 }

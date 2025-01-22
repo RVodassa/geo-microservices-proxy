@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"github.com/RVodassa/geo-microservices-proxy/internal/domain/entity"
+	"github.com/RVodassa/geo-microservices-proxy/internal/domain/logger"
 	"github.com/RVodassa/geo-microservices-proxy/internal/service"
 	_ "github.com/RVodassa/geo-microservices-proxy/pkg/swagger"
 	"github.com/go-chi/chi/v5"
@@ -22,10 +23,12 @@ type ErrorResponse struct {
 
 type HttpController struct {
 	service service.ProxyGeoServiceProvider
+	log     logger.Logger
 }
 
-func NewHttpController(service service.ProxyGeoServiceProvider) *HttpController {
+func NewHttpController(log logger.Logger, service service.ProxyGeoServiceProvider) *HttpController {
 	return &HttpController{
+		log:     log,
 		service: service,
 	}
 }
