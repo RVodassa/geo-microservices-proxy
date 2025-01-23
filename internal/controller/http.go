@@ -2,10 +2,10 @@ package controller
 
 import (
 	"encoding/json"
+	_ "github.com/RVodassa/geo-microservices-proxy/docs"
 	"github.com/RVodassa/geo-microservices-proxy/internal/domain/entity"
 	"github.com/RVodassa/geo-microservices-proxy/internal/domain/logger"
 	"github.com/RVodassa/geo-microservices-proxy/internal/service"
-	_ "github.com/RVodassa/geo-microservices-proxy/pkg/swagger"
 	"github.com/go-chi/chi/v5"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"log"

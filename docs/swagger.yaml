@@ -50,7 +50,6 @@ definitions:
       query:
         type: string
     type: object
-host: localhost:8080
 info:
   contact:
     email: support@geo.com
@@ -84,12 +83,16 @@ paths:
           description: Ошибка клиента
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
+        "403":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
         "500":
           description: Ошибка на сервере
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Геокодирование
       tags:
       - geo-service
@@ -116,12 +119,16 @@ paths:
           description: Ошибка клиента
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
+        "403":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
         "500":
           description: Ошибка на сервере
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Поиск данных
       tags:
       - geo-service
@@ -150,6 +157,10 @@ paths:
             $ref: '#/definitions/controller.ErrorResponse'
         "401":
           description: Неверные учетные данные
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
+        "403":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
         "500":
@@ -182,6 +193,10 @@ paths:
           description: Ошибка клиента
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
+        "403":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
         "500":
           description: Ошибка на сервере
           schema:
@@ -212,12 +227,16 @@ paths:
           description: Ошибка клиента
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
+        "403":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
         "500":
           description: Ошибка на сервере
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Получить список пользователей
       tags:
       - users
@@ -244,17 +263,22 @@ paths:
           description: Ошибка клиента
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
+        "403":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controller.ErrorResponse'
         "500":
           description: Ошибка на сервере
           schema:
             $ref: '#/definitions/controller.ErrorResponse'
       security:
-      - ApiKeyAuth: []
+      - BearerAuth: []
       summary: Получить профиль пользователя
       tags:
       - profile
 securityDefinitions:
-  ApiKeyAuth:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and the JWT token.
     in: header
     name: Authorization
     type: apiKey

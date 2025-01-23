@@ -11,21 +11,6 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-// @title Geo Microservices API
-// @version 1.0
-// @description API для работы с геоданными
-
-// @contact.name API Support
-// @contact.email support@geo.com
-
-// @license.name Apache 2.0
-
-// @securityDefinitions.apikey BearerAuth
-// @in header
-// @name Authorization
-// @description Type "Bearer" followed by a space and the JWT token.
-// @host localhost:8080
-
 type App struct {
 	log logger.Logger
 	cfg *Config
